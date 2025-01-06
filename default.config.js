@@ -19,7 +19,8 @@ module.exports = defineConfig({
     baseURL: process.env.BASE_URL || 'http://localhost:3000',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
-    video: 'on-first-retry',
+//    video: 'on-first-retry',
+    video: 'on',
   },
   projects: [
     {
