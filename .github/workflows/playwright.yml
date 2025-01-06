@@ -1,0 +1,51 @@
+name: Playwright Tests
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  test:
+    name: Run Playwright Tests
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.49.1-jammy
+      
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '21'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Install Playwright Browsers
+        run: npx playwright install chromium
+        
+      #- name: Run all tests
+      #  run: npx playwright test --workers=10
+        
+      - name: Run specific test with repeat
+        if: always()  # Run even if previous step fails
+        run: npx playwright test tests/sample.spec.js --workers=10 --repeat-each=10
+        
+      #- name: Run specific test without repeat
+      #  if: always()  # Run even if previous step fails
+      #  run: npx playwright test tests/sample.spec.js --workers=10
+        
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-test-results
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 30
