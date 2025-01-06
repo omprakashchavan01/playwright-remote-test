@@ -34,7 +34,10 @@ jobs:
         
       - name: Run specific test with repeat
         if: always()  # Run even if previous step fails
-        run: npx playwright test tests/sample.spec.js --workers=10 --repeat-each=10
+        run: npx playwright test tests/sample.spec.js --config=default.config.js --repeat-each=10
+        env:
+          CI: true
+          BASE_URL: ${{ secrets.BASE_URL || 'http://localhost:3000' }}
         
       #- name: Run specific test without repeat
       #  if: always()  # Run even if previous step fails
